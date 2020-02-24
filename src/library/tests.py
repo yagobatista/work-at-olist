@@ -6,15 +6,13 @@ from rest_framework import status
 from rest_framework.test import APITestCase
 
 from library.models import Author, Book
+from library.factories import AuthorFactory, BookFactory
 
 
 class BookTests(APITestCase):
 
     def setUp(self):
-        authors = [Author(name='Author1'), Author(
-            name='Author 2'), Author(name='Author 3')]
-        Author.objects.bulk_create(authors)
-        # first_author = Author.objects.first()
+        AuthorFactory.create_batch(3)
         self.data = {
             'name': 'book teste',
             'edition': 1,
@@ -89,11 +87,81 @@ class BookTests(APITestCase):
 
     def test_delete_book(self):
         """
-        Teste creta book with multiple author
+        Teste deleting book
+        """
+        response = self._create()
+        self.assertTrue(Book.objects.exists())
+        book_pk = response.data.get('pk')
+        url = '{}{}/'.format(reverse('book-list'), book_pk)
+        self.client.delete(url)
+        self.assertFalse(Book.objects.exists())
+
+    def test_update_book(self):
+        """
+        Teste update all attributes from book
         """
         response = self._create()
         book_pk = response.data.get('pk')
+        url = '{}{}/'.format(reverse('book-list'), book_pk)
+        self.data.update({
+            'name': 'update book teste',
+            'edition': 2,
+            'publication_year': 2004,
+            'authors': [Author.objects.first().pk],
+        })
+        put_response = self.client.put(url, self.data, format='json')
+        put_response.data.pop('pk')
+        self.assertEqual(self.data, put_response.data)
+
+    def test_partial_update_book(self):
+        """
+        Teste update only authors attributes from book
+        """
+        response = self._create()
+        book_pk = response.data.get('pk')
+        url = '{}{}/'.format(reverse('book-list'), book_pk)
+        self.data.update({
+            'authors': [Author.objects.first().pk],
+        })
+        patch_response = self.client.patch(url, self.data, format='json')
+        patch_response.data.pop('pk')
+        self.assertEqual(self.data, patch_response.data)
+
+
+class BookTestsRetrieve(APITestCase):
+    """
+    Teste retrieve Book
+    """
+
+    def test_retrieve_books_pagination(self):
+        """
+        Teste retrieve items per page and count total
+        """
+        BookFactory.create_batch(50)
         url = reverse('book-list')
-        import ipdb; ipdb.set_trace()
-        self.client.delete()
-        self.assertEqual(len(authors), 3)
+        get_response = self.client.get(url, format='json')
+        data = get_response.data.get('results')
+        count_total = get_response.data.get('count')
+        self.assertEqual(len(data), 10)
+        self.assertEqual(count_total, 50)
+
+    def test_retrieve_books_filter(self):
+        """
+        Teste retrieve Filter
+        """
+        authors = AuthorFactory.create_batch(3)
+        BookFactory.create_batch(10, authors=authors)
+        # book = BookFactory(authors=authors)
+        url = reverse('book-list')
+        authors = Book.objects.values_list('authors').order_by('authors')
+        get_response = self.client.get(
+            url,
+            # data={
+            #     ''
+            # },
+            format='json',
+        )
+        data = get_response.data.get('results')
+        count_total = get_response.data.get('count')
+        self.assertEqual(len(data), 10)
+        self.assertEqual(count_total, 50)
