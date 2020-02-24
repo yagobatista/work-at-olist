@@ -1,3 +1,5 @@
+import csv
+
 from django.core.management.base import BaseCommand, CommandError
 from library.models import Author
 
@@ -10,11 +12,10 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         sheet_name = options.get('sheet_name')[0]
-        import csv
         authors = []
-        with open(sheet_name, 'rb') as f:
+        with open(sheet_name, 'r') as f:
             r = csv.reader(f)
             for row in r:
-                authors.append(Author(row))
+                authors.append(Author(name=row[0]))
         
-        Author.objects.bulk_create()
+        Author.objects.bulk_create(authors)
