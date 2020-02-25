@@ -1,7 +1,9 @@
 
 from datetime import datetime
 
+from django.core.management import call_command
 from django.urls import reverse
+from django.test import TestCase
 from rest_framework import status
 from rest_framework.test import APITestCase
 
@@ -275,3 +277,103 @@ class BookTestsRetrieve(APITestCase):
         self.assertIn(author, third.get('authors'))
 
 
+class AuthorTestImportCommand(TestCase):
+    """
+    Test Command that imports Authors data
+    """
+
+    def test_command(self):
+        self.assertFalse(Author.objects.exists())
+        call_command('import_authors', 'library/authors.csv')
+        self.assertTrue(Author.objects.exists())
+
+
+class AuthorTestCreate(APITestCase):
+    """
+    Test bereaver of creating Authors
+    """
+
+    def setUp(self):
+        self.data = {
+            'name': 'Author 1',
+        }
+
+    def test_create_author(self):
+        """
+        Test Authors name
+        """
+        url = reverse('author-list')
+        post_response = self.client.post(url, self.data, format='json')
+        data = post_response.data
+        self.assertTrue(Author.objects.exists())
+        self.assertEqual(data.get('name'), 'Author 1')
+
+
+class AuthorTestUpdate(APITestCase):
+    """
+    Test bereaver of updating Authors
+    """
+
+    def test_updating_author_name(self):
+        """
+        Test update of Authors name
+        """
+        author = AuthorFactory()
+        url = '{}{}/'.format(reverse('author-list'), author.pk)
+        data = {
+            'name': 'New Name',
+        }
+        post_response = self.client.put(url, data, format='json')
+        data = post_response.data
+        self.assertEqual(data.get('name'), 'New Name')
+
+
+class AuthorTestDelete(APITestCase):
+    """
+    Test bereaver of deleting Authors
+    """
+
+    def test_delete(self):
+        """
+        Test delete Authors
+        """
+        author = AuthorFactory()
+        url = '{}{}/'.format(reverse('author-list'), author.pk)
+        self.client.delete(url, format='json')
+        self.assertFalse(Author.objects.exists())
+
+
+class AuthorTestRetrieve(APITestCase):
+    """
+    Test bereaver of retriving Authors
+    """
+
+    def test_retrieve_authors_pagination(self):
+        """
+        Test items per page and count total
+        """
+        AuthorFactory.create_batch(40)
+
+        url = reverse('author-list')
+        get_response = self.client.get(url, format='json')
+        data = get_response.data.get('results')
+        count_total = get_response.data.get('count')
+
+        self.assertEqual(len(data), 10)
+        self.assertEqual(count_total, 40)
+
+    def test_retrieve_authors_filter_name(self):
+        AuthorFactory.create_batch(10)
+        AuthorFactory(name='New Author 1')
+        AuthorFactory(name='New Author 2')
+
+        url = reverse('author-list')
+        get_response = self.client.get(
+            url,
+            data={
+                'name': 'New Author'
+            },
+            format='json',
+        )
+        data = get_response.data.get('results')
+        self.assertEqual(len(data), 2)
