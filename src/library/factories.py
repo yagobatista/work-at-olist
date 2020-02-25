@@ -21,7 +21,7 @@ class BookFactory(DjangoModelFactory):
 
     @factory.post_generation
     def authors(self, create, extracted, **kwargs):
-        if not create and not extracted:
+        if not create or not extracted:
             return
 
         for author in extracted:

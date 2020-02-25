@@ -11,8 +11,8 @@ class Author(Model):
     name = CharField(max_length=30)
 
     class Meta:
-        verbose_name= 'Author'
-        verbose_name_plural= 'Authors'
+        verbose_name = 'Author'
+        verbose_name_plural = 'Authors'
 
 
 class Book(Model):
@@ -35,5 +35,5 @@ class Book(Model):
     )
 
     class Meta:
-        verbose_name= 'Book'
-        verbose_name_plural= 'Books'
+        verbose_name = 'Book'
+        verbose_name_plural = 'Books'
