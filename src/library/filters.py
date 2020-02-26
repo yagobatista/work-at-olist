@@ -1,5 +1,5 @@
 from library.models import Author, Book
-from django_filters import CharFilter, BaseInFilter, FilterSet
+from django_filters import CharFilter, NumberFilter, FilterSet
 
 
 class AuthorFilterSet(FilterSet):
@@ -12,7 +12,7 @@ class AuthorFilterSet(FilterSet):
 
 class BookFilterSet(FilterSet):
     name = CharFilter(lookup_expr='contains')
-    author = BaseInFilter('authors')
+    author = NumberFilter('authors')
 
     class Meta:
         model = Book

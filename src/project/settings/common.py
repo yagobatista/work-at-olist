@@ -11,7 +11,6 @@ https://docs.djangoproject.com/en/3.0/ref/settings/
 """
 
 import os
-
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -21,12 +20,6 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = '&f&uhneg6u_=3)e#_g%etd4on(zz=wavm3me@fm3)i9**r7)9l'
-
-# SECURITY WARNING: don't run with debug turned on in production!
-ALLOWED_HOSTS = ['challenge-olist.herokuapp.com']
-DEBUG = False
-DEFAULT_FROM_EMAIL = 'yagobatistasilva@Gmail.com'
-
 
 # Application definition
 
@@ -80,16 +73,6 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'project.wsgi.application'
 
-# Database
-# https://docs.djangoproject.com/en/3.0/ref/settings/#databases
-
-DATABASES = {
-    'default': {        
-        'ENGINE': 'django.db.backends.sqlite3',        
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),    
-    }
-}
-
 # Password validation
 # https://docs.djangoproject.com/en/3.0/ref/settings/#auth-password-validators
 
@@ -123,9 +106,3 @@ USE_L10N = True
 USE_TZ = True
 
 STATIC_URL = '/static/'
-
-if not DEBUG:
-    import dj_database_url
-    DATABASES['default'] = dj_database_url.config(conn_max_age=600)
-    STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
-    STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'

@@ -136,7 +136,7 @@ To create a book you need to send this payload (in json format) below:
 
 ## Setup instructions
 
-The project was developed on a Linux based environment, with the vscode IDE. I choose the Django web framework, some libraries a worth mentioning, restframework was used to make it easier to implement a rest api and 
+The project was developed on a Linux based environment, with the vscode IDE. I choose the Django web framework for it's rapid development and performance, some libraries a worth mentioning, restframework was used to make it easier to implement a rest api and 
 drf_yasg to implement the project documentation. The project's python version is 3.7.6, I recommend installing it 
 through pyenv. You can find installation instructions here [link](https://github.com/pyenv/pyenv-installer). 
 
@@ -163,28 +163,37 @@ pyenv activate olist_env
 ```
 git clone git@github.com:yagobatista/work-at-olist.git
 ```
+### Dependencies 
+
+On Linux, I had some trouble installing heroku's deploy dependencies, I recommend installing this package first
+
+```
+sudo apt install libpq-dev
+```
+
 
 ### Requirements
 
 ```
 cd work-at-olist && pip install -r requirements.txt 
 ```
-### Running migrations
+
+### Running migrations in development mode
 
 ```
-cd src && ./manage.py migrate
+cd src && ./manage.py migrate --settings=project.settings.devel 
 ```
 
-### Running server
+### Running server in development mode
 
 ```
-./manage.py runserver
+./manage.py runserver --settings=project.settings.devel 
 ```
 
 ### Running tests
 
 ```
-./manage.py test
+./manage.py test --settings=project.settings.devel 
 ```
 
 ### Api endpoints
@@ -198,7 +207,7 @@ cd src && ./manage.py migrate
 For testing purposes we have a csv file inside the library folder, you can run the command below a test the import functionality.
 
 ```
-./manage.py import_authors library/authors.csv 
+./manage.py import_authors library/authors.csv --settings=project.settings.devel 
 ```
 
 ### Deploy
