@@ -133,3 +133,78 @@ To create a book you need to send this payload (in json format) below:
 * Be careful with REST API details. They can bite you!
 
 **Have fun!**
+
+## Setup instructions
+
+The project was developed on a Linux based environment, with the vscode IDE. I choose the Django web framework, some libraries a worth mentioning, restframework was used to make it easier to implement a rest api and 
+drf_yasg to implement the project documentation. The project's python version is 3.7.6, I recommend installing it 
+through pyenv. You can find installation instructions here [link](https://github.com/pyenv/pyenv-installer). 
+
+### Python
+
+```
+pyenv install 3.7.6
+```
+
+### Virtualenv
+
+```
+pyenv virtualenv 3.7.6 olist_env
+```
+
+### Activate virtualenv
+
+```
+pyenv activate olist_env
+```
+
+### Clone repository
+
+```
+git clone git@github.com:yagobatista/work-at-olist.git
+```
+
+### Requirements
+
+```
+cd work-at-olist && pip install -r requirements.txt 
+```
+### Running migrations
+
+```
+cd src && ./manage.py migrate
+```
+
+### Running server
+
+```
+./manage.py runserver
+```
+
+### Running tests
+
+```
+./manage.py test
+```
+
+### Api endpoints
+
+* /library/authors/
+* /library/books/
+* /docs/
+
+### Example of import author data
+
+For testing purposes we have a csv file inside the library folder, you can run the command below a test the import functionality.
+
+```
+./manage.py import_authors library/authors.csv 
+```
+
+### Deploy
+
+The project has been deploy on heruko [link](https://challenge-olist.herokuapp.com/library/).
+
+### Documentation
+
+The api documentation can be found on the [link](https://challenge-olist.herokuapp.com/docs/).
