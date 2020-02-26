@@ -16,12 +16,24 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 from rest_framework import routers
+from drf_yasg.views import get_schema_view
+from drf_yasg import openapi
 from library.views import AuthorViewSet, BookViewSet
 
 router = routers.DefaultRouter()
 router.register(r'authors', AuthorViewSet)
 router.register(r'books', BookViewSet)
 
+schema_view = get_schema_view(
+    openapi.Info(
+        title="Work at Olist Api",
+        default_version='v1',
+        description="Author and Book CRUD was implemented on this api",
+    ),
+    public=True,
+)
+
 urlpatterns = [
-    path('', include(router.urls)),
+    path('library/', include(router.urls)),
+    path('docs/', schema_view.with_ui(cache_timeout=0)),
 ]

@@ -1,3 +1,4 @@
 .vscode
 src/db.sqlite3
+src/staticfiles/
 __pycache__/

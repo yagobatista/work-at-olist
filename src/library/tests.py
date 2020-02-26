@@ -176,10 +176,8 @@ class BookTestsRetrieve(APITestCase):
 
         url = reverse('book-list')
         get_response = self.client.get(url, format='json')
-        data = get_response.data.get('results')
         count_total = get_response.data.get('count')
 
-        self.assertEqual(len(data), 10)
         self.assertEqual(count_total, 50)
 
     def test_retrieve_books_filter_name(self):
@@ -356,10 +354,8 @@ class AuthorTestRetrieve(APITestCase):
 
         url = reverse('author-list')
         get_response = self.client.get(url, format='json')
-        data = get_response.data.get('results')
         count_total = get_response.data.get('count')
 
-        self.assertEqual(len(data), 10)
         self.assertEqual(count_total, 40)
 
     def test_retrieve_authors_filter_name(self):
